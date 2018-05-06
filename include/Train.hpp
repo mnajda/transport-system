@@ -1,10 +1,17 @@
 #pragma once
 
+#include "Cargo.hpp"
+
+#include <vector>
+#include <string>
+
 class Train
 {
 public:
-    Train(unsigned id) : trainId(id) {}
-
+    Train(int id) : trainId(id) {}
+    bool loadCargo(const std::string& name, int amount);
+    bool unloadCargo(const std::string& name, int amount);
 private:
-    unsigned trainId;
+    int trainId, capacity;
+    std::vector<Cargo> cargo;
 };
