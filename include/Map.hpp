@@ -12,11 +12,12 @@ enum class FieldType
 
 struct Field
 {
-    FieldType type = Empty;
-    bool isAvailable = false;
+    FieldType type{FieldType::Empty};
+    bool isAvailable{false};
 };
 
 struct Map
 {
+    Map() : map(8, std::vector<Field>(8)) {}
     std::vector<std::vector<Field>> map;
 };
