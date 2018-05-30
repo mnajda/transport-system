@@ -11,12 +11,11 @@
 class Train
 {
 public:
-    Train(int id, int startingX, int startingY, Map& simMap, const std::vector<Position>& trainRoute);
-    void moveTrain();
+    Train(int id, int startingX, int startingY, const std::vector<Position>& trainRoute);
+    void moveTrain(Map& map);
     bool changeCargoAmount(const std::string& name, int amount);
 private:
     int trainId, capacity;
-    Map& map;
     Position position;
     std::vector<Cargo> cargo;
     std::vector<Position> route;

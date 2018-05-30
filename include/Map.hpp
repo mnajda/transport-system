@@ -20,5 +20,5 @@ struct Field
 
 struct Map
 {
-    std::array<std::array<Field, 8>, 8> map;
+    std::array<std::array<Field, 8>, 8> fields;
 };
