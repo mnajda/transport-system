@@ -1,6 +1,7 @@
 #pragma once
 
-#include <vector>
+#include <array>
+#include <mutex>
 
 enum class FieldType
 {
@@ -14,10 +15,10 @@ struct Field
 {
     FieldType type{FieldType::Empty};
     bool isAvailable{false};
+    std::mutex mutex;
 };
 
 struct Map
 {
-    Map() : map(8, std::vector<Field>(8)) {}
-    std::vector<std::vector<Field>> map;
+    std::array<std::array<Field, 8>, 8> map;
 };
