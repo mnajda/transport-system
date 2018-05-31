@@ -15,6 +15,10 @@ public:
     void moveTrain(Map& map);
     bool changeCargoAmount(const std::string& name, int amount);
 private:
+    void freeRailway(Map& map, const Position& pos) const;
+    void singleRailway(Map& map, const Position& pos) const;
+    void arrivedToStation(Map& map, const Position& pos) const;
+
     int trainId, capacity;
     Position position;
     std::vector<Cargo> cargo;

@@ -8,10 +8,10 @@
 
 Simulation::Simulation()
 {
-    std::cout << "Start simulation\n";
+    std::cout << "Start simulation\n\n";
 
     std::vector<Position> route;
-    trainStations.emplace_back(TrainStation{0, 4, 4});
+    trainStations.emplace_back(TrainStation{0, 4, 4, map});
 
     for (auto i = 7; i > -1; --i)
     {
@@ -24,6 +24,7 @@ Simulation::Simulation()
     }
 
     map.fields[4][4].type = FieldType::Station;
+    map.fields[4][6].type = FieldType::SingleRailway;
 
     trainThreads.emplace_back(std::thread(&Train::moveTrain, Train{0, 0, 0, route}, std::ref(map)));
     trainStationThreads.emplace_back(std::thread(&TrainStation::trainEvent, trainStations[0]));

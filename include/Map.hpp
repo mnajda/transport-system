@@ -2,6 +2,7 @@
 
 #include <array>
 #include <mutex>
+#include <condition_variable>
 
 enum class FieldType
 {
@@ -16,6 +17,7 @@ struct Field
     FieldType type{FieldType::Empty};
     bool isAvailable{false};
     std::mutex mutex;
+    std::condition_variable cv;
 };
 
 struct Map
