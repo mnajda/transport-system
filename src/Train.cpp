@@ -18,7 +18,7 @@ void Train::moveTrain(Map& map)
 {
     for (const auto& pos : route)
     {
-        std::unique_lock<std::mutex> lock(map.fields[pos.x][pos.y].mutex);
+        std::lock_guard<std::mutex> lock(map.fields[pos.x][pos.y].mutex);
         map.fields[pos.x][pos.y].isAvailable = false;
         std::this_thread::sleep_for(std::chrono::milliseconds{500});
         std::cout <<  "#" << std::flush;
