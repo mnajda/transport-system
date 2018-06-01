@@ -43,7 +43,7 @@ void TrainStation::trainEvent()
 void TrainStation::changeCargoAmount()
 {
     std::this_thread::sleep_for(std::chrono::seconds{3});
-    if (auto& product = cargo[loaded]; product < 7 &&  product + 2 <= 10)
+    if (auto& product = cargo[loaded]; product < 7 &&  product + 2 <= capacity)
     {
         product += 2;
         std::cout << "New value: " + std::to_string(product) + "\n";

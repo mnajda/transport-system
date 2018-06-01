@@ -38,7 +38,7 @@ void Train::moveTrain(Map& map)
 
 void Train::changeCargoAmount(const std::string_view name, int amount)
 {
-    if (auto& product = cargo[name]; product + amount >= 0)
+    if (auto& product = cargo[name]; product + amount >= 0 && product + amount <= capacity)
     {
         product += amount;
         std::cout << name << " " + std::to_string(product) + "\n";

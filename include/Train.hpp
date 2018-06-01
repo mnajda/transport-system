@@ -20,7 +20,7 @@ private:
     void singleRailway(Map& map, const Position& pos) const;
     void arrivedToStation(Map& map, const Position& pos) const;
 
-    int trainId, capacity;
+    int trainId, capacity{10};
     Position position;
     std::map<std::string_view, int> cargo;
     std::vector<Position> route;

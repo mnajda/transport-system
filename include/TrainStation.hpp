@@ -12,11 +12,11 @@ class TrainStation
 {
 public:
     TrainStation(int id, int posX, int posY, Map& map, std::vector<Train>& trains, 
-                                const std::string_view unloaded, const std::string_view loaded);
+                    const std::string_view unloaded, const std::string_view loaded);
     void trainEvent();
     void changeCargoAmount();
 private:
-    int stationId, capacity = 50;
+    int stationId, capacity{10};
     Position pos;
     Map& map;
     std::vector<Train>& trains;
