@@ -16,6 +16,7 @@ public:
     void start();
 private:
     Map map;
+    std::vector<Train> trains;
     std::vector<TrainStation> trainStations;
     std::vector<std::thread> trainThreads;
     std::vector<std::thread> workerThreads;
