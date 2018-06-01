@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <mutex>
+#include <thread>
 #include <condition_variable>
 
 TrainStation::TrainStation(int id, int posX, int posY, Map& map)
@@ -9,6 +10,7 @@ TrainStation::TrainStation(int id, int posX, int posY, Map& map)
     , pos(Position{ posX, posY })
     , map(map)
 {
+    cargo.emplace("Vegetables", 8);
 }
 
 void TrainStation::trainEvent()
@@ -20,7 +22,22 @@ void TrainStation::trainEvent()
     map.fields[pos.x][pos.y].cv.notify_one();
 }
 
-void TrainStation::changeCargoAmount(const std::string& cargoName, int amount)
+void TrainStation::changeCargoAmount()
 {
-    
+    std::this_thread::sleep_for(std::chrono::seconds{3});
+    for (auto& product : cargo)
+    {
+        if (product.second > 7)
+        {
+            std::cout << "Remove " + product.first + " ";
+            product.second -= 3;
+            std::cout << "New value: " + std::to_string(product.second) + "\n";
+        }
+        else if (product.second < 3)
+        {
+            std::cout << "Add " + product.first + " ";
+            product.second += 3;
+            std::cout << "New value: " + std::to_string(product.second) + "\n";
+        }
+    }
 }

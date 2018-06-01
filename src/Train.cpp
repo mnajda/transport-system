@@ -11,9 +11,9 @@ Train::Train(int id, int startingX, int startingY, const std::vector<Position>& 
     , position({ startingX, startingY })
     , route(trainRoute)
 {
-    cargo.emplace_back(Cargo("Fruits", 0));
-    cargo.emplace_back(Cargo("Vegetables", 0));
-    cargo.emplace_back(Cargo("Beer", 0));
+    cargo.emplace("Fruits", 0);
+    cargo.emplace("Vegetables", 0);
+    cargo.emplace("Beer", 0);
 }
 
 void Train::moveTrain(Map& map)

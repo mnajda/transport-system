@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Cargo.hpp"
-#include "Position.hpp"
-#include "Map.hpp"
-
 #include <vector>
 #include <utility>
 #include <string>
+#include <map>
+
+#include "Position.hpp"
+#include "Map.hpp"
 
 class Train
 {
@@ -21,6 +21,6 @@ private:
 
     int trainId, capacity;
     Position position;
-    std::vector<Cargo> cargo;
+    std::map<std::string, int> cargo;
     std::vector<Position> route;
 };
