@@ -1,18 +1,18 @@
 #include <iostream>
-#include <vector>
-#include <string_view>
 #include <map>
+#include <string_view>
 #include <thread>
+#include <vector>
 
-#include "Simulation.hpp"
-#include "Position.hpp"
 #include "Map.hpp"
+#include "Position.hpp"
+#include "Simulation.hpp"
 
 namespace
 {
-    constexpr std::string_view fruits = "Fruits";
-    constexpr std::string_view vegetables = "Vegetables";
-    constexpr std::string_view beer = "Beer";
+constexpr std::string_view fruits = "Fruits";
+constexpr std::string_view vegetables = "Vegetables";
+constexpr std::string_view beer = "Beer";
 } // namespace
 
 Simulation::Simulation()

@@ -1,20 +1,21 @@
 #pragma once
 
-#include <vector>
-#include <utility>
-#include <string_view>
 #include <map>
+#include <string_view>
+#include <utility>
+#include <vector>
 
-#include "Position.hpp"
 #include "Map.hpp"
+#include "Position.hpp"
 
 class Train
 {
 public:
-    Train(int id, int startingX, int startingY, 
-            std::map<std::string_view, int>& cargo, const std::vector<Position>& trainRoute);
+    Train(int id, int startingX, int startingY, std::map<std::string_view, int>& cargo,
+          const std::vector<Position>& trainRoute);
     void moveTrain(Map& map);
-    void changeCargoAmount(const std::string_view name, int amount);
+    void changeCargoAmount(std::string_view name, int amount);
+
 private:
     void freeRailway(Map& map, const Position& pos) const;
     void singleRailway(Map& map, const Position& pos) const;

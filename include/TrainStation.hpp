@@ -1,7 +1,7 @@
 #pragma once
 
-#include <string_view>
 #include <map>
+#include <string_view>
 #include <vector>
 
 #include "Map.hpp"
@@ -11,10 +11,11 @@
 class TrainStation
 {
 public:
-    TrainStation(int id, int posX, int posY, Map& map, std::vector<Train>& trains, 
-                    const std::string_view unloaded, const std::string_view loaded);
+    TrainStation(int id, int posX, int posY, Map& map, std::vector<Train>& trains, std::string_view unloaded,
+                 std::string_view loaded);
     void trainEvent();
     void changeCargoAmount();
+
 private:
     int stationId, capacity{10};
     Position pos;

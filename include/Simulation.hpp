@@ -1,7 +1,7 @@
 #pragma once
 
-#include <vector>
 #include <thread>
+#include <vector>
 
 #include "Map.hpp"
 #include "Train.hpp"
@@ -14,6 +14,7 @@ public:
     ~Simulation();
 
     void start();
+
 private:
     Map map;
     std::vector<Train> trains;

@@ -1,14 +1,14 @@
-#include <iostream>
-#include <thread>
 #include <chrono>
 #include <condition_variable>
+#include <iostream>
+#include <thread>
 
 #include "Train.hpp"
 
-Train::Train(int id, int startingX, int startingY, 
-                std::map<std::string_view, int>& cargo, const std::vector<Position>& trainRoute)
+Train::Train(int id, int startingX, int startingY, std::map<std::string_view, int>& cargo,
+             const std::vector<Position>& trainRoute)
     : trainId(id)
-    , position({ startingX, startingY })
+    , position({startingX, startingY})
     , cargo(cargo)
     , route(trainRoute)
 {
@@ -48,8 +48,7 @@ void Train::changeCargoAmount(const std::string_view name, int amount)
 void Train::freeRailway(Map& map, const Position& pos) const
 {
     std::this_thread::sleep_for(std::chrono::milliseconds{500});
-    std::cout <<  "Passing through: (" + std::to_string(pos.x) 
-                    + ", " + std::to_string(pos.y) + ")\n";
+    std::cout << "Passing through: (" + std::to_string(pos.x) + ", " + std::to_string(pos.y) + ")\n";
 }
 
 void Train::singleRailway(Map& map, const Position& pos) const
@@ -57,8 +56,7 @@ void Train::singleRailway(Map& map, const Position& pos) const
     std::lock_guard<std::mutex> lock(map.fields[pos.x][pos.y].mutex);
     map.fields[pos.x][pos.y].isAvailable = false;
     std::this_thread::sleep_for(std::chrono::milliseconds{500});
-    std::cout <<  "Passing through single railway: (" + std::to_string(pos.x) 
-                    + ", " + std::to_string(pos.y) + ")\n";
+    std::cout << "Passing through single railway: (" + std::to_string(pos.x) + ", " + std::to_string(pos.y) + ")\n";
     map.fields[pos.x][pos.y].isAvailable = true;
 }
 

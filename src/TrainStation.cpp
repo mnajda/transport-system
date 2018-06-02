@@ -1,14 +1,14 @@
 #include "TrainStation.hpp"
 
+#include <condition_variable>
 #include <iostream>
 #include <mutex>
 #include <thread>
-#include <condition_variable>
 
-TrainStation::TrainStation(int id, int posX, int posY, Map& map, std::vector<Train>& trains, 
-                                    const std::string_view loaded, const std::string_view unloaded)
+TrainStation::TrainStation(int id, int posX, int posY, Map& map, std::vector<Train>& trains,
+                           const std::string_view loaded, const std::string_view unloaded)
     : stationId(id)
-    , pos(Position{ posX, posY })
+    , pos(Position{posX, posY})
     , map(map)
     , trains(trains)
     , unloaded(unloaded)
@@ -26,7 +26,7 @@ void TrainStation::trainEvent()
     if (map.fields[pos.x][pos.y].id == -1)
     {
         map.fields[pos.x][pos.y].isAvailable = true;
-        map.fields[pos.x][pos.y].cv.notify_one();    
+        map.fields[pos.x][pos.y].cv.notify_one();
     }
     else
     {
@@ -43,7 +43,7 @@ void TrainStation::trainEvent()
 void TrainStation::changeCargoAmount()
 {
     std::this_thread::sleep_for(std::chrono::seconds{3});
-    if (auto& product = cargo[loaded]; product < 7 &&  product + 2 <= capacity)
+    if (auto& product = cargo[loaded]; product < 7 && product + 2 <= capacity)
     {
         product += 2;
         std::cout << "New value: " + std::to_string(product) + "\n";
