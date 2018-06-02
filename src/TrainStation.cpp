@@ -5,20 +5,20 @@
 #include <mutex>
 #include <thread>
 
-TrainStation::TrainStation(int id, int posX, int posY, Map& map, std::vector<Train>& trains, const std::string& loaded,
+TrainStation::TrainStation(int id, Position pos, Map& map, std::vector<Train>& trains, const std::string& loaded,
                            const std::string& unloaded)
     : stationId(id)
-    , pos({posX, posY})
+    , pos(pos)
     , map(map)
     , trains(trains)
     , unloaded(unloaded)
     , loaded(loaded)
 {
-    cargo.emplace(loaded, 5);
     cargo.emplace(unloaded, 5);
+    cargo.emplace(loaded, 5);
 }
 
-void TrainStation::trainEvent()
+void TrainStation::trainEvent(std::array<std::mutex, 4>& trainLocks)
 {
     auto& mapField = map[pos.x][pos.y];
 
@@ -32,6 +32,7 @@ void TrainStation::trainEvent()
     }
     else
     {
+        std::scoped_lock<std::mutex> trainLock(trainLocks[mapField.id]);
         trains[mapField.id].changeCargoAmount(loaded, 2);
         cargo[loaded] -= 2;
         trains[mapField.id].changeCargoAmount(unloaded, -2);
@@ -42,9 +43,10 @@ void TrainStation::trainEvent()
     }
 }
 
-void TrainStation::changeCargoAmount()
+void TrainStation::changeCargoAmount(std::array<std::mutex, 4>& trainStationLocks)
 {
     std::this_thread::sleep_for(std::chrono::seconds{3});
+    std::scoped_lock<std::mutex> lock(trainStationLocks[stationId]);
     if (auto& product = cargo[loaded]; product < 7 && product + 2 <= capacity)
     {
         product += 2;

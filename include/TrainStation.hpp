@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <mutex>
 #include <string>
 #include <vector>
 
@@ -11,10 +12,10 @@
 class TrainStation
 {
 public:
-    TrainStation(int id, int posX, int posY, Map& map, std::vector<Train>& trains, const std::string& unloaded,
+    TrainStation(int id, Position pos, Map& map, std::vector<Train>& trains, const std::string& unloaded,
                  const std::string& loaded);
-    void trainEvent();
-    void changeCargoAmount();
+    void trainEvent(std::array<std::mutex, 4>& trainLocks);
+    void changeCargoAmount(std::array<std::mutex, 4>& trainStationLocks);
 
 private:
     int stationId, capacity{10};

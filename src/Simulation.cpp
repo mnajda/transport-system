@@ -49,6 +49,13 @@ Simulation::~Simulation()
 
 void Simulation::start()
 {
+    createTrains();
+    createTrainStations();
+    createThreads();
+}
+
+void Simulation::createTrains()
+{
     std::vector<Position> route;
     std::map<std::string, int> cargo;
 
@@ -61,10 +68,18 @@ void Simulation::start()
     cargo.emplace(vegetables, 0);
     cargo.emplace(beer, 2);
 
-    trains.emplace_back(Train{0, 0, 0, map, cargo, route});
-    trainStations.emplace_back(TrainStation{0, 4, 4, map, trains, vegetables, beer});
+    trains.emplace_back(Train{0, {0, 0}, map, cargo, route});
+}
 
+void Simulation::createTrainStations()
+{
+    trainStations.emplace_back(TrainStation{0, {4, 4}, map, trains, vegetables, beer});
+}
+
+void Simulation::createThreads()
+{
     trainThreads.emplace_back(std::thread(&Train::moveTrain, trains[0]));
-    workerThreads.emplace_back(std::thread(&TrainStation::changeCargoAmount, trainStations[0]));
-    trainStationThreads.emplace_back(std::thread(&TrainStation::trainEvent, trainStations[0]));
+    workerThreads.emplace_back(
+        std::thread(&TrainStation::changeCargoAmount, trainStations[0], std::ref(trainStationLocks)));
+    trainStationThreads.emplace_back(std::thread(&TrainStation::trainEvent, trainStations[0], std::ref(trainLocks)));
 }

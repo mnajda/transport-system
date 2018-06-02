@@ -11,8 +11,8 @@
 class Train
 {
 public:
-    Train(int id, int startingX, int startingY, Map& map, std::map<std::string, int>& cargo,
-          const std::vector<Position>& trainRoute);
+    Train(int id, Position startPos, Map& map, const std::map<std::string, int>& cargo,
+          std::vector<Position> trainRoute);
     void moveTrain();
     void changeCargoAmount(const std::string& name, int amount);
 

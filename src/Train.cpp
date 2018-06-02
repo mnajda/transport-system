@@ -4,14 +4,15 @@
 #include <condition_variable>
 #include <iostream>
 #include <thread>
+#include <utility>
 
-Train::Train(int id, int startingX, int startingY, Map& map, std::map<std::string, int>& cargo,
-             const std::vector<Position>& trainRoute)
+Train::Train(int id, Position startPos, Map& map, const std::map<std::string, int>& cargo,
+             std::vector<Position> trainRoute)
     : trainId(id)
-    , position({startingX, startingY})
+    , position(startPos)
     , map(map)
     , cargo(cargo)
-    , route(trainRoute)
+    , route(std::move(trainRoute))
 {
 }
 
@@ -57,7 +58,7 @@ void Train::singleRailway(const Position& pos) const
 {
     auto& mapField = map[pos.x][pos.y];
 
-    std::lock_guard<std::mutex> lock(mapField.mutex);
+    std::scoped_lock<std::mutex> lock(mapField.mutex);
     mapField.isAvailable = false;
     std::this_thread::sleep_for(std::chrono::milliseconds{500});
     std::cout << "Passing through single railway: (" + std::to_string(pos.x) + ", " + std::to_string(pos.y) + ")\n";
@@ -68,7 +69,7 @@ void Train::arrivedToStation(const Position& pos) const
 {
     auto& mapField = map[pos.x][pos.y];
 
-    std::lock_guard<std::mutex> lock(mapField.mutex);
+    std::scoped_lock<std::mutex> lock(mapField.mutex);
     mapField.id = trainId;
     std::cout << "Train " + std::to_string(trainId) + " arrived to station\n";
     mapField.isAvailable = false;
