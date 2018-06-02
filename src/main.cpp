@@ -1,4 +1,5 @@
 #include "Simulation.hpp"
+#include "Visualization.hpp"
 
 int main(int argc, char** argv)
 {

@@ -8,6 +8,7 @@ set(SOURCES
     src/Simulation.cpp
     src/Train.cpp
     src/TrainStation.cpp
+    src/Visualization.cpp
 )
 
 find_package(Threads REQUIRED)

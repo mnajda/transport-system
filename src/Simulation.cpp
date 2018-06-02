@@ -63,6 +63,18 @@ void Simulation::createTrains()
     {
         route.emplace_back(Position{4, i});
     }
+    for (auto i = 5; i < 8; ++i)
+    {
+        route.emplace_back(Position{i, 0});
+    }
+    for (auto i = 1; i < 8; ++i)
+    {
+        route.emplace_back(Position{7, i});
+    }
+    for (auto i = 6; i > 3; --i)
+    {
+        route.emplace_back(Position{i, 7});
+    }
 
     cargo.emplace(fruits, 0);
     cargo.emplace(vegetables, 0);

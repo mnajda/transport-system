@@ -8,6 +8,7 @@
 #include "Map.hpp"
 #include "Train.hpp"
 #include "TrainStation.hpp"
+#include "Visualization.hpp"
 
 class Simulation
 {
@@ -23,6 +24,7 @@ private:
     void createThreads();
 
     Map map;
+    Visualization vis;
     std::vector<Train> trains;
     std::vector<TrainStation> trainStations;
     std::vector<std::thread> trainThreads;
