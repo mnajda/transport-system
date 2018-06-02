@@ -14,9 +14,9 @@ enum class FieldType
 
 struct Field
 {
-    int id{-1};
     FieldType type{FieldType::Empty};
     bool isAvailable{false};
+    int id{-1};
     std::mutex mutex;
     std::condition_variable cv;
 };

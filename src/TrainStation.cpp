@@ -5,10 +5,10 @@
 #include <mutex>
 #include <thread>
 
-TrainStation::TrainStation(int id, int posX, int posY, Map& map, std::vector<Train>& trains,
-                           const std::string_view loaded, const std::string_view unloaded)
+TrainStation::TrainStation(int id, int posX, int posY, Map& map, std::vector<Train>& trains, const std::string& loaded,
+                           const std::string& unloaded)
     : stationId(id)
-    , pos(Position{posX, posY})
+    , pos({posX, posY})
     , map(map)
     , trains(trains)
     , unloaded(unloaded)

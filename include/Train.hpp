@@ -1,7 +1,7 @@
 #pragma once
 
 #include <map>
-#include <string_view>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -11,18 +11,19 @@
 class Train
 {
 public:
-    Train(int id, int startingX, int startingY, std::map<std::string_view, int>& cargo,
+    Train(int id, int startingX, int startingY, Map& map, std::map<std::string, int>& cargo,
           const std::vector<Position>& trainRoute);
-    void moveTrain(Map& map);
-    void changeCargoAmount(std::string_view name, int amount);
+    void moveTrain();
+    void changeCargoAmount(const std::string& name, int amount);
 
 private:
-    void freeRailway(Map& map, const Position& pos) const;
-    void singleRailway(Map& map, const Position& pos) const;
-    void arrivedToStation(Map& map, const Position& pos) const;
+    void freeRailway(const Position& pos) const;
+    void singleRailway(const Position& pos) const;
+    void arrivedToStation(const Position& pos) const;
 
     int trainId, capacity{10};
     Position position;
-    std::map<std::string_view, int> cargo;
+    Map& map;
+    std::map<std::string, int> cargo;
     std::vector<Position> route;
 };

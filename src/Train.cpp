@@ -1,43 +1,44 @@
+#include "Train.hpp"
+
 #include <chrono>
 #include <condition_variable>
 #include <iostream>
 #include <thread>
 
-#include "Train.hpp"
-
-Train::Train(int id, int startingX, int startingY, std::map<std::string_view, int>& cargo,
+Train::Train(int id, int startingX, int startingY, Map& map, std::map<std::string, int>& cargo,
              const std::vector<Position>& trainRoute)
     : trainId(id)
     , position({startingX, startingY})
+    , map(map)
     , cargo(cargo)
     , route(trainRoute)
 {
 }
 
-void Train::moveTrain(Map& map)
+void Train::moveTrain()
 {
     for (const auto& pos : route)
     {
         auto& mapField = map[pos.x][pos.y];
         if (mapField.type == FieldType::Station)
         {
-            arrivedToStation(map, pos);
+            arrivedToStation(pos);
             std::unique_lock<std::mutex> lock(mapField.mutex);
             mapField.cv.wait(lock, [&mapField] { return mapField.isAvailable; });
             mapField.id = -1;
         }
         else if (mapField.type == FieldType::SingleRailway)
         {
-            singleRailway(map, pos);
+            singleRailway(pos);
         }
         else
         {
-            freeRailway(map, pos);
+            freeRailway(pos);
         }
     }
 }
 
-void Train::changeCargoAmount(const std::string_view name, int amount)
+void Train::changeCargoAmount(const std::string& name, int amount)
 {
     if (auto& product = cargo[name]; product + amount >= 0 && product + amount <= capacity)
     {
@@ -46,13 +47,13 @@ void Train::changeCargoAmount(const std::string_view name, int amount)
     }
 }
 
-void Train::freeRailway(Map& map, const Position& pos) const
+void Train::freeRailway(const Position& pos) const
 {
     std::this_thread::sleep_for(std::chrono::milliseconds{500});
     std::cout << "Passing through: (" + std::to_string(pos.x) + ", " + std::to_string(pos.y) + ")\n";
 }
 
-void Train::singleRailway(Map& map, const Position& pos) const
+void Train::singleRailway(const Position& pos) const
 {
     auto& mapField = map[pos.x][pos.y];
 
@@ -63,7 +64,7 @@ void Train::singleRailway(Map& map, const Position& pos) const
     mapField.isAvailable = true;
 }
 
-void Train::arrivedToStation(Map& map, const Position& pos) const
+void Train::arrivedToStation(const Position& pos) const
 {
     auto& mapField = map[pos.x][pos.y];
 
