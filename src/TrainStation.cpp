@@ -25,22 +25,17 @@ void TrainStation::trainEvent(std::array<std::mutex, 4>& trainLocks)
     std::unique_lock<std::mutex> lock(mapField.mutex);
     mapField.cv.wait(lock, [&mapField] { return !mapField.isAvailable; });
 
-    if (mapField.id == -1)
-    {
-        mapField.isAvailable = true;
-        mapField.cv.notify_one();
-    }
-    else
+    if (mapField.id != -1)
     {
         std::scoped_lock<std::mutex> trainLock(trainLocks[mapField.id]);
         trains[mapField.id].changeCargoAmount(loaded, 2);
         cargo[loaded] -= 2;
         trains[mapField.id].changeCargoAmount(unloaded, -2);
         cargo[unloaded] += 2;
-
-        mapField.isAvailable = true;
-        mapField.cv.notify_one();
     }
+
+    mapField.isAvailable = true;
+    mapField.cv.notify_one();
 }
 
 void TrainStation::changeCargoAmount(std::array<std::mutex, 4>& trainStationLocks)
