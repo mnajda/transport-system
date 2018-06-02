@@ -24,4 +24,5 @@ struct Field
 struct Map
 {
     std::array<std::array<Field, 8>, 8> fields;
+    std::array<Field, 8>& operator[](int row) { return fields[row]; }
 };

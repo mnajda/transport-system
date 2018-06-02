@@ -18,14 +18,15 @@ void Train::moveTrain(Map& map)
 {
     for (const auto& pos : route)
     {
-        if (map.fields[pos.x][pos.y].type == FieldType::Station)
+        auto& mapField = map[pos.x][pos.y];
+        if (mapField.type == FieldType::Station)
         {
             arrivedToStation(map, pos);
-            std::unique_lock<std::mutex> lock(map.fields[pos.x][pos.y].mutex);
-            map.fields[pos.x][pos.y].cv.wait(lock, [&map, &pos] { return map.fields[pos.x][pos.y].isAvailable; });
-            map.fields[pos.x][pos.y].id = -1;
+            std::unique_lock<std::mutex> lock(mapField.mutex);
+            mapField.cv.wait(lock, [&mapField] { return mapField.isAvailable; });
+            mapField.id = -1;
         }
-        else if (map.fields[pos.x][pos.y].type == FieldType::SingleRailway)
+        else if (mapField.type == FieldType::SingleRailway)
         {
             singleRailway(map, pos);
         }
@@ -53,20 +54,24 @@ void Train::freeRailway(Map& map, const Position& pos) const
 
 void Train::singleRailway(Map& map, const Position& pos) const
 {
-    std::lock_guard<std::mutex> lock(map.fields[pos.x][pos.y].mutex);
-    map.fields[pos.x][pos.y].isAvailable = false;
+    auto& mapField = map[pos.x][pos.y];
+
+    std::lock_guard<std::mutex> lock(mapField.mutex);
+    mapField.isAvailable = false;
     std::this_thread::sleep_for(std::chrono::milliseconds{500});
     std::cout << "Passing through single railway: (" + std::to_string(pos.x) + ", " + std::to_string(pos.y) + ")\n";
-    map.fields[pos.x][pos.y].isAvailable = true;
+    mapField.isAvailable = true;
 }
 
 void Train::arrivedToStation(Map& map, const Position& pos) const
 {
-    std::lock_guard<std::mutex> lock(map.fields[pos.x][pos.y].mutex);
-    map.fields[pos.x][pos.y].id = trainId;
+    auto& mapField = map[pos.x][pos.y];
+
+    std::lock_guard<std::mutex> lock(mapField.mutex);
+    mapField.id = trainId;
     std::cout << "Train " + std::to_string(trainId) + " arrived to station\n";
-    map.fields[pos.x][pos.y].isAvailable = false;
+    mapField.isAvailable = false;
 
     std::this_thread::sleep_for(std::chrono::milliseconds{750});
-    map.fields[pos.x][pos.y].cv.notify_one();
+    mapField.cv.notify_one();
 }

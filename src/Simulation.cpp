@@ -21,12 +21,12 @@ Simulation::Simulation()
 
     for (auto i = 0; i < 8; ++i)
     {
-        map.fields[4][i].type = FieldType::Railway;
-        map.fields[4][i].isAvailable = true;
+        map[4][i].type = FieldType::Railway;
+        map[4][i].isAvailable = true;
     }
 
-    map.fields[4][4].type = FieldType::Station;
-    map.fields[4][6].type = FieldType::SingleRailway;
+    map[4][4].type = FieldType::Station;
+    map[4][6].type = FieldType::SingleRailway;
 }
 
 Simulation::~Simulation()

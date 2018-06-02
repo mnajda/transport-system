@@ -20,23 +20,25 @@ TrainStation::TrainStation(int id, int posX, int posY, Map& map, std::vector<Tra
 
 void TrainStation::trainEvent()
 {
-    std::unique_lock<std::mutex> lock(map.fields[pos.x][pos.y].mutex);
-    map.fields[pos.x][pos.y].cv.wait(lock, [this] { return !map.fields[pos.x][pos.y].isAvailable; });
+    auto& mapField = map[pos.x][pos.y];
 
-    if (map.fields[pos.x][pos.y].id == -1)
+    std::unique_lock<std::mutex> lock(mapField.mutex);
+    mapField.cv.wait(lock, [&mapField] { return !mapField.isAvailable; });
+
+    if (mapField.id == -1)
     {
-        map.fields[pos.x][pos.y].isAvailable = true;
-        map.fields[pos.x][pos.y].cv.notify_one();
+        mapField.isAvailable = true;
+        mapField.cv.notify_one();
     }
     else
     {
-        trains[map.fields[pos.x][pos.y].id].changeCargoAmount(loaded, 2);
+        trains[mapField.id].changeCargoAmount(loaded, 2);
         cargo[loaded] -= 2;
-        trains[map.fields[pos.x][pos.y].id].changeCargoAmount(unloaded, -2);
+        trains[mapField.id].changeCargoAmount(unloaded, -2);
         cargo[unloaded] += 2;
 
-        map.fields[pos.x][pos.y].isAvailable = true;
-        map.fields[pos.x][pos.y].cv.notify_one();
+        mapField.isAvailable = true;
+        mapField.cv.notify_one();
     }
 }
 
