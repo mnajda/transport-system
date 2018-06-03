@@ -28,6 +28,9 @@ Simulation::Simulation()
 
     map[4][4].type = FieldType::Station;
     map[4][6].type = FieldType::SingleRailway;
+    createTrains();
+    createTrainStations();
+    Visualization vis(trains, trainStations);
 }
 
 Simulation::~Simulation()
@@ -76,8 +79,8 @@ void Simulation::createTrains()
         route.emplace_back(Position{i, 7});
     }
 
-    cargo.emplace(fruits, 0);
-    cargo.emplace(vegetables, 0);
+    cargo.emplace(fruits, 2);
+    cargo.emplace(vegetables, 2);
     cargo.emplace(beer, 2);
 
     trains.emplace_back(Train{0, {0, 0}, map, cargo, route});
@@ -85,7 +88,8 @@ void Simulation::createTrains()
 
 void Simulation::createTrainStations()
 {
-    trainStations.emplace_back(TrainStation{0, {4, 4}, map, trains, vegetables, beer});
+    trainStations.emplace_back(TrainStation{0, {4, 4}, map, trains, {vegetables, beer}});
+    trainStations.emplace_back(TrainStation{0, {7, 3}, map, trains, {fruits, vegetables}});
 }
 
 void Simulation::createThreads()

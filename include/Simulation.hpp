@@ -24,7 +24,7 @@ private:
     void createThreads();
 
     Map map;
-    Visualization vis;
+    //Visualization vis;
     std::vector<Train> trains;
     std::vector<TrainStation> trainStations;
     std::vector<std::thread> trainThreads;

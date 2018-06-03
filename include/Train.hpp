@@ -15,6 +15,8 @@ public:
           std::vector<Position> trainRoute);
     void moveTrain();
     void changeCargoAmount(const std::string& name, int amount);
+    Position getTrainPosition();
+    std::map<std::string, int>& getTrainsCargo();
 
 private:
     void freeRailway(const Position& pos) const;

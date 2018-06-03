@@ -4,18 +4,17 @@
 #include <iostream>
 #include <mutex>
 #include <thread>
+#include <utility>
 
-TrainStation::TrainStation(int id, Position pos, Map& map, std::vector<Train>& trains, const std::string& loaded,
-                           const std::string& unloaded)
+TrainStation::TrainStation(int id, Position pos, Map& map, std::vector<Train>& trains, Cargo availableCargo)
     : stationId(id)
     , pos(pos)
     , map(map)
     , trains(trains)
-    , unloaded(unloaded)
-    , loaded(loaded)
+    , availableCargo{std::move(availableCargo)}
 {
-    cargo.emplace(unloaded, 5);
-    cargo.emplace(loaded, 5);
+    cargo.emplace(availableCargo.loaded, 5);
+    cargo.emplace(availableCargo.unloaded, 5);
 }
 
 void TrainStation::trainEvent(std::array<std::mutex, 4>& trainLocks)
@@ -28,10 +27,10 @@ void TrainStation::trainEvent(std::array<std::mutex, 4>& trainLocks)
     if (mapField.id != -1)
     {
         std::scoped_lock<std::mutex> trainLock(trainLocks[mapField.id]);
-        trains[mapField.id].changeCargoAmount(loaded, 2);
-        cargo[loaded] -= 2;
-        trains[mapField.id].changeCargoAmount(unloaded, -2);
-        cargo[unloaded] += 2;
+        trains[mapField.id].changeCargoAmount(availableCargo.loaded, 2);
+        cargo[availableCargo.loaded] -= 2;
+        trains[mapField.id].changeCargoAmount(availableCargo.unloaded, -2);
+        cargo[availableCargo.unloaded] += 2;
     }
 
     mapField.isAvailable = true;
@@ -42,14 +41,29 @@ void TrainStation::changeCargoAmount(std::array<std::mutex, 4>& trainStationLock
 {
     std::this_thread::sleep_for(std::chrono::seconds{3});
     std::scoped_lock<std::mutex> lock(trainStationLocks[stationId]);
-    if (auto& product = cargo[loaded]; product < 7 && product + 2 <= capacity)
+    if (auto& product = cargo[availableCargo.loaded]; product < 7 && product + 2 <= capacity)
     {
         product += 2;
         std::cout << "New value: " + std::to_string(product) + "\n";
     }
-    if (auto& product = cargo[unloaded]; product > 5 && product - 2 >= 0)
+    if (auto& product = cargo[availableCargo.unloaded]; product > 5 && product - 2 >= 0)
     {
         product -= 2;
         std::cout << "New value: " + std::to_string(product) + "\n";
     }
+}
+
+Position TrainStation::getStationPosition()
+{
+    return pos;
+}
+
+Cargo TrainStation::getAvailableCargo()
+{
+    return availableCargo;
+}
+
+std::map<std::string, int>& TrainStation::getCurrectCargo()
+{
+    return cargo;
 }
