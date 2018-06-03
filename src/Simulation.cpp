@@ -96,9 +96,9 @@ void Simulation::createTrainStations()
 
 void Simulation::createThreads()
 {
-    trainThreads.emplace_back(std::thread(&Train::moveTrain, trains[0], std::ref(isRunning)));
-    workerThreads.emplace_back(std::thread(&TrainStation::changeCargoAmount, trainStations[0],
+    trainThreads.emplace_back(std::thread(&Train::moveTrain, &trains[0], std::ref(isRunning)));
+    workerThreads.emplace_back(std::thread(&TrainStation::changeCargoAmount, &trainStations[0],
                                            std::ref(trainStationLocks), std::ref(isRunning)));
     trainStationThreads.emplace_back(
-        std::thread(&TrainStation::trainEvent, trainStations[0], std::ref(trainLocks), std::ref(isRunning)));
+        std::thread(&TrainStation::trainEvent, &trainStations[0], std::ref(trainLocks), std::ref(isRunning)));
 }

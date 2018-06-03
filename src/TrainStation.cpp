@@ -56,18 +56,3 @@ void TrainStation::changeCargoAmount(std::array<std::mutex, 4>& trainStationLock
         }
     }
 }
-
-Position TrainStation::getStationPosition() const
-{
-    return pos;
-}
-
-Cargo TrainStation::getAvailableCargo() const
-{
-    return availableCargo;
-}
-
-std::map<std::string, int>& TrainStation::getCurrentCargo()
-{
-    return cargo;
-}

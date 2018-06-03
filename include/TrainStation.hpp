@@ -17,9 +17,9 @@ public:
     TrainStation(int id, Position pos, Map& map, std::vector<Train>& trains, Cargo availableCargo);
     void trainEvent(std::array<std::mutex, 4>& trainLocks, bool& isRunning);
     void changeCargoAmount(std::array<std::mutex, 4>& trainStationLocks, bool& isRunning);
-    Position getStationPosition() const;
-    Cargo getAvailableCargo() const;
-    std::map<std::string, int>& getCurrentCargo();
+    Position getStationPosition() const { return pos; }
+    Cargo getAvailableCargo() const { return availableCargo; }
+    std::map<std::string, int>& getCurrentCargo() { return cargo; }
 
 private:
     int stationId, capacity{10};

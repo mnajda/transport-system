@@ -85,13 +85,3 @@ void Train::arrivedToStation(const Position& pos)
     std::this_thread::sleep_for(std::chrono::milliseconds{750});
     mapField.cv.notify_one();
 }
-
-Position Train::getTrainPosition() const
-{
-    return position;
-}
-
-std::map<std::string, int>& Train::getTrainsCargo()
-{
-    return cargo;
-}
