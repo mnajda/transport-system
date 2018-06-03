@@ -27,7 +27,6 @@ private:
     Map map;
     std::vector<Train> trains;
     std::vector<TrainStation> trainStations;
-    std::thread visualization;
     std::vector<std::thread> trainThreads;
     std::vector<std::thread> workerThreads;
     std::vector<std::thread> trainStationThreads;

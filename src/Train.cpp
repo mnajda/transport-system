@@ -6,9 +6,10 @@
 #include <thread>
 #include <utility>
 
-Train::Train(int id, Position startPos, Map& map, const std::map<std::string, int>& cargo,
+Train::Train(int id, unsigned char mark, Position startPos, Map& map, const std::map<std::string, int>& cargo,
              std::vector<Position> trainRoute)
-    : trainId(id)
+    : trainChar(mark)
+    , trainId(id)
     , position(startPos)
     , map(map)
     , cargo(cargo)
@@ -28,7 +29,7 @@ void Train::moveTrain(bool& isRunning)
                 arrivedToStation(pos);
                 std::unique_lock<std::mutex> lock(mapField.mutex);
                 mapField.cv.wait(lock, [&mapField] { return mapField.isAvailable; });
-                mapField.id = -1;
+                mapField.id = -2;
             }
             else if (mapField.type == FieldType::SingleRailway)
             {
@@ -58,25 +59,33 @@ void Train::updatePosition(const Position& pos)
 
 void Train::freeRailway(const Position& pos)
 {
+    auto& mapField = map[pos.x][pos.y];
+
     updatePosition(pos);
+    mapField.id = trainId;
     std::this_thread::sleep_for(std::chrono::milliseconds{500});
+    mapField.id = -1;
 }
 
 void Train::singleRailway(const Position& pos)
 {
-    updatePosition(pos);
     auto& mapField = map[pos.x][pos.y];
 
+    updatePosition(pos);
+
     std::scoped_lock<std::mutex> lock(mapField.mutex);
+    mapField.id = trainId;
     mapField.isAvailable = false;
     std::this_thread::sleep_for(std::chrono::milliseconds{500});
+    mapField.id = -1;
     mapField.isAvailable = true;
 }
 
 void Train::arrivedToStation(const Position& pos)
 {
-    updatePosition(pos);
     auto& mapField = map[pos.x][pos.y];
+
+    updatePosition(pos);
 
     std::scoped_lock<std::mutex> lock(mapField.mutex);
     mapField.id = trainId;

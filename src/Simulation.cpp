@@ -25,15 +25,12 @@ Simulation::Simulation()
     }
 
     map[4][4].type = FieldType::Station;
+    map[4][4].id = -2;
     map[4][6].type = FieldType::SingleRailway;
-
-    createTrains();
-    createTrainStations();
 }
 
 Simulation::~Simulation()
 {
-    visualization.join();
     for (auto& train : trainThreads)
     {
         train.join();
@@ -54,16 +51,17 @@ void Simulation::start()
     createTrainStations();
     createThreads();
 
-    Visualization vis(trains, trainStations);
+    Visualization vis(trains, trainStations, map);
     vis.start(isRunning);
 }
 
 void Simulation::createTrains()
 {
+    std::array<unsigned char, 4> trainMarks = {'&', '^', '*', '%'};
     std::vector<Position> route;
     std::map<std::string, int> cargo;
 
-    for (auto i = 7; i > -1; --i)
+    for (auto i = 6; i > -1; --i)
     {
         route.emplace_back(Position{4, i});
     }
@@ -84,7 +82,7 @@ void Simulation::createTrains()
     cargo.emplace(vegetables, 2);
     cargo.emplace(beer, 2);
 
-    trains.emplace_back(Train{0, {4, 7}, map, cargo, route});
+    trains.emplace_back(Train{0, trainMarks[0], {4, 7}, map, cargo, route});
     //trains.emplace_back(Train{1, {2, 2}, map, cargo, route});
 }
 

@@ -10,13 +10,14 @@
 class Visualization
 {
 public:
-    Visualization(std::vector<Train>& trains, std::vector<TrainStation>& trainStations);
+    Visualization(std::vector<Train>& trains, std::vector<TrainStation>& trainStations, Map& map);
     ~Visualization();
     void start(bool& isRunning);
 
 private:
     void startCurses();
     void createWindows();
+    void displayMap();
     void displayTrains();
     void displayTrainStations();
     void displayTrainsCargo();
@@ -27,6 +28,7 @@ private:
     WINDOW* trainsWindow;
     WINDOW* stationsWindow;
 
+    Map& map;
     std::vector<Train>& trains;
     std::vector<TrainStation>& trainStations;
 };

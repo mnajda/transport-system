@@ -12,12 +12,13 @@ constexpr auto beer = "Beer: ";
 constexpr auto fruitsKey = "Fruits";
 constexpr auto vegetablesKey = "Vegetables";
 constexpr auto beerKey = "Beer";
-constexpr auto offsetY = 15;
-constexpr auto offsetX = 50;
+constexpr auto offsetY = 12;
+constexpr auto offsetX = 40;
 } // namespace
 
-Visualization::Visualization(std::vector<Train>& trains, std::vector<TrainStation>& trainStations)
-    : trains(trains)
+Visualization::Visualization(std::vector<Train>& trains, std::vector<TrainStation>& trainStations, Map& map)
+    : map(map)
+    , trains(trains)
     , trainStations(trainStations)
 {
     startCurses();
@@ -37,6 +38,7 @@ void Visualization::start(bool& isRunning)
 {
     while (isRunning)
     {
+        displayMap();
         displayTrains();
         displayTrainStations();
         displayTrainsCargo();
@@ -70,13 +72,29 @@ void Visualization::createWindows()
     box(stationsWindow, 0, 0);
 }
 
+void Visualization::displayMap()
+{
+    for (auto i = 0; i < map.fields.size(); ++i)
+    {
+        for (auto k = 0; k < map.fields[i].size(); ++k)
+        {
+            if (map[i][k].id == -1)
+            {
+                mvwaddch(mapWindow, i + offsetY, k + offsetX, ' ');
+            }
+        }
+    }
+
+    wrefresh(mapWindow);
+}
+
 void Visualization::displayTrains()
 {
     for (const auto& train : trains)
     {
         auto pos = train.getTrainPosition();
 
-        mvwaddch(mapWindow, pos.y + offsetY, pos.x + offsetX, '&');
+        mvwaddch(mapWindow, pos.x + offsetY, pos.y + offsetX, train.getTrainChar());
     }
 
     wrefresh(mapWindow);
@@ -88,7 +106,7 @@ void Visualization::displayTrainStations()
     {
         auto pos = station.getStationPosition();
 
-        mvwaddch(mapWindow, pos.y + offsetY, pos.x + offsetX, '#');
+        mvwaddch(mapWindow, pos.x + offsetY, pos.y + offsetX, '#');
     }
 
     wrefresh(mapWindow);
