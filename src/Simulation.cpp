@@ -18,8 +18,6 @@ constexpr auto beer = "Beer";
 
 Simulation::Simulation()
 {
-    std::cout << "Start simulation\n\n";
-
     for (auto i = 0; i < 8; ++i)
     {
         map[4][i].type = FieldType::Railway;
@@ -28,13 +26,14 @@ Simulation::Simulation()
 
     map[4][4].type = FieldType::Station;
     map[4][6].type = FieldType::SingleRailway;
+
     createTrains();
     createTrainStations();
-    Visualization vis(trains, trainStations);
 }
 
 Simulation::~Simulation()
 {
+    visualization.join();
     for (auto& train : trainThreads)
     {
         train.join();
@@ -47,7 +46,6 @@ Simulation::~Simulation()
     {
         station.join();
     }
-    std::cout << "\nEnd simulation\n";
 }
 
 void Simulation::start()
@@ -55,6 +53,9 @@ void Simulation::start()
     createTrains();
     createTrainStations();
     createThreads();
+
+    Visualization vis(trains, trainStations);
+    vis.start(isRunning);
 }
 
 void Simulation::createTrains()
@@ -83,19 +84,21 @@ void Simulation::createTrains()
     cargo.emplace(vegetables, 2);
     cargo.emplace(beer, 2);
 
-    trains.emplace_back(Train{0, {0, 0}, map, cargo, route});
+    trains.emplace_back(Train{0, {4, 7}, map, cargo, route});
+    //trains.emplace_back(Train{1, {2, 2}, map, cargo, route});
 }
 
 void Simulation::createTrainStations()
 {
     trainStations.emplace_back(TrainStation{0, {4, 4}, map, trains, {vegetables, beer}});
-    trainStations.emplace_back(TrainStation{0, {7, 3}, map, trains, {fruits, vegetables}});
+    //trainStations.emplace_back(TrainStation{1, {7, 3}, map, trains, {fruits, vegetables}});
 }
 
 void Simulation::createThreads()
 {
-    trainThreads.emplace_back(std::thread(&Train::moveTrain, trains[0]));
-    workerThreads.emplace_back(
-        std::thread(&TrainStation::changeCargoAmount, trainStations[0], std::ref(trainStationLocks)));
-    trainStationThreads.emplace_back(std::thread(&TrainStation::trainEvent, trainStations[0], std::ref(trainLocks)));
+    trainThreads.emplace_back(std::thread(&Train::moveTrain, trains[0], std::ref(isRunning)));
+    workerThreads.emplace_back(std::thread(&TrainStation::changeCargoAmount, trainStations[0],
+                                           std::ref(trainStationLocks), std::ref(isRunning)));
+    trainStationThreads.emplace_back(
+        std::thread(&TrainStation::trainEvent, trainStations[0], std::ref(trainLocks), std::ref(isRunning)));
 }

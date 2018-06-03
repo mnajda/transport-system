@@ -13,15 +13,16 @@ class Train
 public:
     Train(int id, Position startPos, Map& map, const std::map<std::string, int>& cargo,
           std::vector<Position> trainRoute);
-    void moveTrain();
+    void moveTrain(bool& isRunning);
     void changeCargoAmount(const std::string& name, int amount);
-    Position getTrainPosition();
+    Position getTrainPosition() const;
     std::map<std::string, int>& getTrainsCargo();
 
 private:
-    void freeRailway(const Position& pos) const;
-    void singleRailway(const Position& pos) const;
-    void arrivedToStation(const Position& pos) const;
+    void updatePosition(const Position& pos);
+    void freeRailway(const Position& pos);
+    void singleRailway(const Position& pos);
+    void arrivedToStation(const Position& pos);
 
     int trainId, capacity{10};
     Position position;

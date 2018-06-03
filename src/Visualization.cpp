@@ -12,42 +12,16 @@ constexpr auto beer = "Beer: ";
 constexpr auto fruitsKey = "Fruits";
 constexpr auto vegetablesKey = "Vegetables";
 constexpr auto beerKey = "Beer";
+constexpr auto offsetY = 15;
+constexpr auto offsetX = 50;
 } // namespace
 
 Visualization::Visualization(std::vector<Train>& trains, std::vector<TrainStation>& trainStations)
     : trains(trains)
     , trainStations(trainStations)
 {
-    initscr();
-    start_color();
-    curs_set(0);
-    refresh();
-
-    init_pair(1, COLOR_WHITE, COLOR_BLACK);
-
-    getmaxyx(stdscr, columns, lines);
-    mapWindow = newwin(columns, lines / 2, 0, 50);
-    trainsWindow = newwin(columns, (lines / 4) + 3, 0, 0);
-    stationsWindow = newwin(columns, lines / 4, 0, lines - 46);
-
-    std::string test = "0";
-
-    wbkgd(mapWindow, COLOR_PAIR(1));
-    wbkgd(trainsWindow, COLOR_PAIR(1));
-    wbkgd(stationsWindow, COLOR_PAIR(1));
-
-    box(mapWindow, 0, 0);
-    box(trainsWindow, 0, 0);
-    box(stationsWindow, 0, 0);
-
-    displayTrainsCargo();
-    displayStationsCargo();
-
-    wrefresh(mapWindow);
-    wrefresh(trainsWindow);
-    wrefresh(stationsWindow);
-
-    getch();
+    startCurses();
+    createWindows();
 }
 
 Visualization::~Visualization()
@@ -57,6 +31,67 @@ Visualization::~Visualization()
     delwin(stationsWindow);
 
     endwin();
+}
+
+void Visualization::start(bool& isRunning)
+{
+    while (isRunning)
+    {
+        displayTrains();
+        displayTrainStations();
+        displayTrainsCargo();
+        displayStationsCargo();
+    }
+}
+
+void Visualization::startCurses()
+{
+    initscr();
+    start_color();
+    curs_set(0);
+    refresh();
+}
+
+void Visualization::createWindows()
+{
+    init_pair(1, COLOR_WHITE, COLOR_BLACK);
+
+    getmaxyx(stdscr, columns, lines);
+    mapWindow = newwin(columns, lines / 2, 0, 50);
+    trainsWindow = newwin(columns, (lines / 4) + 3, 0, 0);
+    stationsWindow = newwin(columns, lines / 4, 0, lines - 46);
+
+    wbkgd(mapWindow, COLOR_PAIR(1));
+    wbkgd(trainsWindow, COLOR_PAIR(1));
+    wbkgd(stationsWindow, COLOR_PAIR(1));
+
+    box(mapWindow, 0, 0);
+    box(trainsWindow, 0, 0);
+    box(stationsWindow, 0, 0);
+}
+
+void Visualization::displayTrains()
+{
+    for (const auto& train : trains)
+    {
+        auto pos = train.getTrainPosition();
+
+        mvwaddch(mapWindow, pos.y + offsetY, pos.x + offsetX, '&');
+    }
+
+    wrefresh(mapWindow);
+}
+
+void Visualization::displayTrainStations()
+{
+    for (const auto& station : trainStations)
+    {
+        auto pos = station.getStationPosition();
+
+        mvwaddch(mapWindow, pos.y + offsetY, pos.x + offsetX, '#');
+    }
+
+    wrefresh(mapWindow);
 }
 
 void Visualization::displayTrainsCargo()
@@ -74,6 +109,8 @@ void Visualization::displayTrainsCargo()
         mvwaddstr(trainsWindow, j + 4, 2, "--------------------------------------");
         mvwaddstr(trainsWindow, j + 5, 2, "");
     }
+
+    wrefresh(trainsWindow);
 }
 
 void Visualization::displayStationsCargo()
@@ -82,7 +119,7 @@ void Visualization::displayStationsCargo()
     auto j = 1;
     for (decltype(size) i = 0; i < size; ++i, j += 5)
     {
-        auto& currentCargo = trainStations[i].getCurrectCargo();
+        auto& currentCargo = trainStations[i].getCurrentCargo();
         auto availableCargo = trainStations[i].getAvailableCargo();
         auto loadedCargoAmount = std::to_string(currentCargo[availableCargo.loaded]);
         auto unloadedCargoAmount = std::to_string(currentCargo[availableCargo.unloaded]);
@@ -93,4 +130,6 @@ void Visualization::displayStationsCargo()
         mvwaddstr(stationsWindow, j + 3, 2, "--------------------------------------");
         mvwaddstr(stationsWindow, j + 4, 2, "");
     }
+
+    wrefresh(stationsWindow);
 }
