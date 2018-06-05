@@ -12,8 +12,8 @@ constexpr auto beer = "Beer: ";
 constexpr auto fruitsKey = "Fruits";
 constexpr auto vegetablesKey = "Vegetables";
 constexpr auto beerKey = "Beer";
-constexpr auto offsetY = 12;
-constexpr auto offsetX = 40;
+constexpr auto offsetX = 12;
+constexpr auto offsetY = 40;
 } // namespace
 
 Visualization::Visualization(std::vector<Train>& trains, std::vector<TrainStation>& trainStations, Map& map)
@@ -99,7 +99,7 @@ void Visualization::displayMap()
         {
             if (map[i][k].id == -1)
             {
-                mvwaddch(mapWindow, i + offsetY, k + offsetX, ' ');
+                mvwaddch(mapWindow, i + offsetX, k + offsetY, ' ');
             }
         }
     }
@@ -113,7 +113,7 @@ void Visualization::displayTrains()
     {
         auto pos = train.getTrainPosition();
 
-        mvwaddch(mapWindow, pos.x + offsetY, pos.y + offsetX, train.getTrainChar());
+        mvwaddch(mapWindow, pos.x + offsetX, pos.y + offsetY, train.getTrainChar());
     }
 
     wrefresh(mapWindow);
@@ -125,7 +125,7 @@ void Visualization::displayTrainStations()
     {
         auto pos = station.getStationPosition();
 
-        mvwaddch(mapWindow, pos.x + offsetY, pos.y + offsetX, '#');
+        mvwaddch(mapWindow, pos.x + offsetX, pos.y + offsetY, '#');
     }
 
     wrefresh(mapWindow);
@@ -141,7 +141,7 @@ void Visualization::displaySingleRailway()
         {
             if (map[i][k].id == -3)
             {
-                mvwaddch(mapWindow, i + offsetY, k + offsetX, '|');
+                mvwaddch(mapWindow, i + offsetX, k + offsetY, '|');
             }
         }
     }
