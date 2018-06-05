@@ -1,8 +1,8 @@
 #pragma once
 
 #include <ncurses.h>
-#include <vector>
 #include <thread>
+#include <vector>
 
 #include "Train.hpp"
 #include "TrainStation.hpp"
@@ -13,6 +13,7 @@ public:
     Visualization(std::vector<Train>& trains, std::vector<TrainStation>& trainStations, Map& map);
     ~Visualization();
     void start(bool& isRunning);
+    void stopOnButtonPress(bool& isRunning);
 
 private:
     void startCurses();
@@ -23,6 +24,7 @@ private:
     void displaySingleRailway();
     void displayTrainsCargo();
     void displayStationsCargo();
+    void notifyStation(Position pos);
 
     int lines, columns;
     WINDOW* mapWindow;

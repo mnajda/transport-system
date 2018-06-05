@@ -1,13 +1,13 @@
 #pragma once
 
-#include <thread>
-#include <vector>
 #include <array>
 #include <mutex>
+#include <thread>
+#include <vector>
 
 #include "Map.hpp"
-#include "Train.hpp"
 #include "Position.hpp"
+#include "Train.hpp"
 #include "TrainStation.hpp"
 #include "Visualization.hpp"
 
@@ -28,6 +28,7 @@ private:
 
     bool isRunning{true};
     Map map;
+    std::thread exitThread;
     std::vector<Train> trains;
     std::vector<TrainStation> trainStations;
     std::vector<std::thread> trainThreads;

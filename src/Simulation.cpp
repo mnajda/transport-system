@@ -46,6 +46,7 @@ Simulation::Simulation()
 
 Simulation::~Simulation()
 {
+    exitThread.join();
     for (auto& train : trainThreads)
     {
         train.join();
@@ -67,6 +68,7 @@ void Simulation::start()
     createThreads();
 
     Visualization vis(trains, trainStations, map);
+    exitThread = std::thread(&Visualization::stopOnButtonPress, &vis, std::ref(isRunning));
     vis.start(isRunning);
 }
 
@@ -151,10 +153,9 @@ void Simulation::createThreads()
     }
     for (auto i = 0; i < 4; ++i)
     {
-
         workerThreads.emplace_back(std::thread(&TrainStation::changeCargoAmount, &trainStations[i],
                                                std::ref(trainStationLocks), std::ref(isRunning)));
         trainStationThreads.emplace_back(
-                std::thread(&TrainStation::trainEvent, &trainStations[i], std::ref(trainLocks), std::ref(isRunning)));
+            std::thread(&TrainStation::trainEvent, &trainStations[i], std::ref(trainLocks), std::ref(isRunning)));
     }
 }

@@ -47,6 +47,22 @@ void Visualization::start(bool& isRunning)
     }
 }
 
+void Visualization::stopOnButtonPress(bool& isRunning)
+{
+    while (true)
+    {
+        if (getch())
+        {
+            isRunning = false;
+            notifyStation({0, 0});
+            notifyStation({0, 7});
+            notifyStation({7, 0});
+            notifyStation({7, 7});
+            return;
+        }
+    }
+}
+
 void Visualization::startCurses()
 {
     initscr();
@@ -75,7 +91,9 @@ void Visualization::createWindows()
 
 void Visualization::displayMap()
 {
-    for (auto i = 0; i < map.fields.size(); ++i)
+    auto size = map.fields.size();
+
+    for (auto i = 0; i < size; ++i)
     {
         for (auto k = 0; k < map.fields[i].size(); ++k)
         {
@@ -115,7 +133,9 @@ void Visualization::displayTrainStations()
 
 void Visualization::displaySingleRailway()
 {
-    for (auto i = 0; i < map.fields.size(); ++i)
+    auto size = map.fields.size();
+
+    for (auto i = 0; i < size; ++i)
     {
         for (auto k = 0; k < map.fields[i].size(); ++k)
         {
@@ -167,4 +187,10 @@ void Visualization::displayStationsCargo()
     }
 
     wrefresh(stationsWindow);
+}
+
+void Visualization::notifyStation(Position pos)
+{
+    std::unique_lock<std::mutex> lock(map[pos.x][pos.y].mutex);
+    map[pos.x][pos.y].cv.notify_one();
 }
