@@ -111,9 +111,9 @@ void Visualization::displayTrains()
 {
     for (const auto& train : trains)
     {
-        auto pos = train.getTrainPosition();
+        const auto[x, y] = train.getTrainPosition();
 
-        mvwaddch(mapWindow, pos.x + offsetX, pos.y + offsetY, train.getTrainChar());
+        mvwaddch(mapWindow, x + offsetX, y + offsetY, train.getTrainChar());
     }
 
     wrefresh(mapWindow);
@@ -123,9 +123,9 @@ void Visualization::displayTrainStations()
 {
     for (const auto& station : trainStations)
     {
-        auto pos = station.getStationPosition();
+        const auto[x, y] = station.getStationPosition();
 
-        mvwaddch(mapWindow, pos.x + offsetX, pos.y + offsetY, '#');
+        mvwaddch(mapWindow, x + offsetX, y + offsetY, '#');
     }
 
     wrefresh(mapWindow);
@@ -175,13 +175,13 @@ void Visualization::displayStationsCargo()
     for (decltype(size) i = 0; i < size; ++i, j += 5)
     {
         auto& currentCargo = trainStations[i].getCurrentCargo();
-        auto availableCargo = trainStations[i].getAvailableCargo();
-        auto loadedCargoAmount = std::to_string(currentCargo[availableCargo.loaded]);
-        auto unloadedCargoAmount = std::to_string(currentCargo[availableCargo.unloaded]);
+        const auto[loaded, unloaded] = trainStations[i].getAvailableCargo();
+        auto loadedCargoAmount = std::to_string(currentCargo[loaded]);
+        auto unloadedCargoAmount = std::to_string(currentCargo[unloaded]);
 
         mvwaddstr(stationsWindow, j, 2, (station + std::to_string(i)).c_str());
-        mvwaddstr(stationsWindow, j + 1, 2, (availableCargo.loaded + ": " + loadedCargoAmount).c_str());
-        mvwaddstr(stationsWindow, j + 2, 2, (availableCargo.unloaded + ": " + unloadedCargoAmount).c_str());
+        mvwaddstr(stationsWindow, j + 1, 2, (loaded + ": " + loadedCargoAmount).c_str());
+        mvwaddstr(stationsWindow, j + 2, 2, (unloaded + ": " + unloadedCargoAmount).c_str());
         mvwaddstr(stationsWindow, j + 3, 2, "--------------------------------------");
         mvwaddstr(stationsWindow, j + 4, 2, "");
     }
