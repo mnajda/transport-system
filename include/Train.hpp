@@ -12,7 +12,7 @@ class Train
 {
 public:
     Train(int id, unsigned char mark, Position startPos, Map& map, const std::map<std::string, int>& cargo,
-          std::vector<Position> trainRoute);
+          const std::vector<Position>& trainRoute);
     void moveTrain(bool& isRunning);
     void changeCargoAmount(const std::string& name, int amount);
     unsigned char getTrainChar() const { return trainChar; }

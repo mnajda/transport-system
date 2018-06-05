@@ -7,6 +7,7 @@
 
 #include "Map.hpp"
 #include "Train.hpp"
+#include "Position.hpp"
 #include "TrainStation.hpp"
 #include "Visualization.hpp"
 
@@ -19,6 +20,8 @@ public:
     void start();
 
 private:
+    std::vector<Position> makeRoute1();
+    std::vector<Position> makeRoute2();
     void createTrains();
     void createTrainStations();
     void createThreads();

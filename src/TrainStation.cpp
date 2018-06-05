@@ -36,8 +36,12 @@ void TrainStation::trainEvent(std::array<std::mutex, 4>& trainLocks, bool& isRun
             }
             if (auto& unloaded = cargo[availableCargo.unloaded]; unloaded + 2 <= capacity)
             {
-                trains[mapField.id].changeCargoAmount(availableCargo.unloaded, -2);
-                unloaded += 2;
+                auto& trainsCargo = trains[mapField.id].getTrainsCargo();
+                if (trainsCargo[availableCargo.unloaded] - 2 >= 0)
+                {
+                    trains[mapField.id].changeCargoAmount(availableCargo.unloaded, -2);
+                    unloaded += 2;
+                }
             }
         }
 

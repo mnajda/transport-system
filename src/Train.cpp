@@ -1,5 +1,6 @@
 #include "Train.hpp"
 
+#include <algorithm>
 #include <chrono>
 #include <condition_variable>
 #include <iostream>
@@ -7,14 +8,16 @@
 #include <utility>
 
 Train::Train(int id, unsigned char mark, Position startPos, Map& map, const std::map<std::string, int>& cargo,
-             std::vector<Position> trainRoute)
+             const std::vector<Position>& trainRoute)
     : trainChar(mark)
     , trainId(id)
     , position(startPos)
     , map(map)
     , cargo(cargo)
-    , route(std::move(trainRoute))
+    , route(trainRoute)
 {
+    auto it = std::find(route.begin(), route.end(), position);
+    std::rotate(route.begin(), it, route.end());
 }
 
 void Train::moveTrain(bool& isRunning)
@@ -71,13 +74,13 @@ void Train::singleRailway(const Position& pos)
 {
     auto& mapField = map[pos.x][pos.y];
 
+    std::scoped_lock<std::mutex> lock(mapField.mutex);
     updatePosition(pos);
 
-    std::scoped_lock<std::mutex> lock(mapField.mutex);
     mapField.id = trainId;
     mapField.isAvailable = false;
     std::this_thread::sleep_for(std::chrono::milliseconds{500});
-    mapField.id = -1;
+    mapField.id = -3;
     mapField.isAvailable = true;
 }
 
@@ -85,9 +88,9 @@ void Train::arrivedToStation(const Position& pos)
 {
     auto& mapField = map[pos.x][pos.y];
 
+    std::scoped_lock<std::mutex> lock(mapField.mutex);
     updatePosition(pos);
 
-    std::scoped_lock<std::mutex> lock(mapField.mutex);
     mapField.id = trainId;
     mapField.isAvailable = false;
 

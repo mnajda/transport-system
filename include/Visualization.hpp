@@ -20,6 +20,7 @@ private:
     void displayMap();
     void displayTrains();
     void displayTrainStations();
+    void displaySingleRailway();
     void displayTrainsCargo();
     void displayStationsCargo();
 

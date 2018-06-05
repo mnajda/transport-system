@@ -41,6 +41,7 @@ void Visualization::start(bool& isRunning)
         displayMap();
         displayTrains();
         displayTrainStations();
+        displaySingleRailway();
         displayTrainsCargo();
         displayStationsCargo();
     }
@@ -107,6 +108,22 @@ void Visualization::displayTrainStations()
         auto pos = station.getStationPosition();
 
         mvwaddch(mapWindow, pos.x + offsetY, pos.y + offsetX, '#');
+    }
+
+    wrefresh(mapWindow);
+}
+
+void Visualization::displaySingleRailway()
+{
+    for (auto i = 0; i < map.fields.size(); ++i)
+    {
+        for (auto k = 0; k < map.fields[i].size(); ++k)
+        {
+            if (map[i][k].id == -3)
+            {
+                mvwaddch(mapWindow, i + offsetY, k + offsetX, '|');
+            }
+        }
     }
 
     wrefresh(mapWindow);
